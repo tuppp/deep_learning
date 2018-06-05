@@ -1,0 +1,4 @@
+1.) Strides in Convolution? > Taziano
+2.) Maxpool rauslassen?
+3.) Filtergrößen?
+
