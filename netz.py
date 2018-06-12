@@ -12,6 +12,82 @@ import numpy as np
 import pdb
 import tensorflow as tf
 from hyperparams import *
+import csv
+
+def getDataSequence(batchsize,city1,city2,city3,city4,city5):
+    with open('data.csv', 'r') as csvfile:
+        spamreader = csv.reader(csvfile, delimiter=';')
+        l1 = []
+        l2 = []
+        l3 = []
+        l4 = []
+        l5 = []
+        for row in spamreader:
+            if row[0]==city1:
+                l1.append(row)
+            if row[0]==city2:
+                l2.append(row)
+            if row[0]==city3:
+                l3.append(row)
+            if row[0]==city4:
+                l4.append(row)
+            if row[0]==city5:
+                l5.append(row)
+        print(len(l1),len(l2),len(l3),len(l4),len(l5),)
+        ok=0
+        if l1[0][3]==l2[0][3]:
+            ok+=1
+        if l1[0][3]==l3[0][3]:
+            ok+=1
+        if l1[0][3]==l4[0][3]:
+            ok+=1
+        if l1[0][3]==l5[0][3]:
+            ok+=1
+
+        res=[]
+        if ok==4:
+            print("Data ist OK")
+            if batchsize*8>len(l1):
+                print("Die Batches sind zu groß")
+                return None
+            else:
+                batchamount=len(l1)//(batchsize*8)
+                print(batchamount)
+                for i in range(batchamount):
+                    batch=np.zeros((batchsize,5,7))
+                    batchres=np.zeros((batchsize))
+                    for j in range(batchsize):
+                        tmp = np.array(
+                            [
+                                [item[15] for item in l1[i*8*batchsize+j*8:i*8*batchsize++j*8+7]],
+                                [item[15] for item in l2[i*8*batchsize+j*8:i*8*batchsize++j*8+7]],
+                                [item[15] for item in l3[i*8*batchsize+j*8:i*8*batchsize++j*8+7]],
+                                [item[15] for item in l4[i*8*batchsize+j*8:i*8*batchsize++j*8+7]],
+                                [item[15] for item in l5[i*8*batchsize+j*8:i*8*batchsize++j*8+7]],
+                            ])
+                        batch[j]=tmp
+                        batchres[j]=l1[i*8*batchsize+j*8+7][15]
+                    res.append([batch,batchres])
+
+            print(len(res))
+            return res
+        else:
+            print("Data ist fehlerhaft")
+            return None
+
+
+
+
+
+
+batches=getDataSequence(5   ,"1504","102","3319","4560","2638")
+for batch in batches:
+    trainX=batch[0]
+    trainY=batch[1]
+    print(trainX)
+    print(trainY)
+
+
 
 
 #readAllData
@@ -140,8 +216,6 @@ init_op = tf.global_variables_initializer()
 
 with tf.Session() as sess:
     sess.run(init_op)
-
-
 
     erg = sess.run([dense_layer ], feed_dict={x: trainX, y: trainY})
     print erg
