@@ -29,6 +29,18 @@ def ourConvolution(previous_layer, filter_height, filter_width, input_channels, 
 
     return layer1
 
+def ourPooling(conv_layer, kheight, kwidth):
+
+    pool_layer = tf.nn.max_pool(
+        value=conv_layer,
+        ksize=[1, kheight, kwidth, 1],
+        strides=[1, 1, 1, 1],
+        padding="VALID",
+        data_format='NHWC',
+        name=None
+    )
+
+    return pool_layer
 
 
 
@@ -78,7 +90,9 @@ for i in hyperparams["nr_convs"]:
         input_channel = hyperparams.channel_sequence[i-1]
 
     layers = []
-    layers.append(ourConvolution(previous_layer,hyperparams["filter"][1], hyperparams["filter"][0], input_channel , hyperparams.channel_sequence[i]))
+    conv_layer = ourConvolution(previous_layer,hyperparams["filter"][1], hyperparams["filter"][0], input_channel , hyperparams.channel_sequence[i])
+    layers.append(conv_layer)
+    layers.append(ourPooling(conv_layer,hyperparams["ksize"][1], hyperparams["ksize"][0]))
 
 last_conv_layer = layers[hyperparams["nr_convs"]-1]
 
