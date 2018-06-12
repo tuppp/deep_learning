@@ -8,7 +8,7 @@ class Hyperparams():
 
     def getPoolSize(self):
         self.poolsize_range_city = np.arange(nr_cities)+1
-        self.poolsize_range_city = np.array([2, 3, 4, 5, 6, 7])
+        self.poolsize_range_time = np.array([2, 3, 4, 5, 6, 7])
 
     def getFilters(self):
         self.filter_range_city = np.arange(nr_cities)+1
@@ -25,7 +25,7 @@ class Hyperparams():
         self.getPoolSize()
         channel_sequence = self.generateChannelSizes()
         hyperparams = {
-            "ksize" : [ np.random.choice(self.poolsize_range_city), np.random.choice(poolsize_range_time)],
+            "ksize" : [ np.random.choice(self.poolsize_range_city), np.random.choice(self.poolsize_range_time)],
             "filter" : [ np.random.choice(self.filter_range_city), np.random.choice(self.filter_range_time)],
             "nr_convs" : 3,
             "channel_sequence" : channel_sequence
