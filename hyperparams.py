@@ -20,11 +20,13 @@ class Hyperparams():
 
 
 
+
     def getRandomHyperparameter(self):
         self.getFilters()
         self.getPoolSize()
         channel_sequence = self.generateChannelSizes()
         hyperparams = {
+            "nr_neurons_in_convlayer" : [200],
             "ksize" : [ np.random.choice(self.poolsize_range_city), np.random.choice(poolsize_range_time)],
             "filter" : [ np.random.choice(self.filter_range_city), np.random.choice(self.filter_range_time)],
             "nr_convs" : 3,
