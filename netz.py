@@ -1,18 +1,32 @@
+#np.ones((5,7))
+#city(zeile), zeit(spalte)
+
+#batchsize,city,zeile
+
+
+
+
+#7*5
+
 import numpy as np
 import pdb
 import tensorflow as tf
 from hyperparams import *
 
 
+#readAllData
+
+
+
 def fc_layer(input, neuronsize):
-    w = tf.Variable(tf.random_normal(shape=(input.shape[1].value, neuronsize), stddev=0.03), name='w')
-    layer = tf.matmul(input, w)  # (800, 13)
+    shape=(input.shape[1].value, neuronsize)
+    w = tf.Variable(tf.random_normal(shape=shape, stddev=0.03), name='w')
+    layer = tf.matmul(input, w)
     return layer
 
 
 #hyperparams["filter"][1], hyperparams["filter"][0]
 def ourConvolution(previous_layer, filter_height, filter_width, input_channels, output_channels):
-
     w = tf.Variable(tf.random_normal(shape=(filter_height, filter_width, input_channels, output_channels), mean=0,
                                      stddev=0.5))  # [filter_height, filter_width, in_channels, out_channels]
 
@@ -20,7 +34,7 @@ def ourConvolution(previous_layer, filter_height, filter_width, input_channels, 
         input=previous_layer,
         filter=w,
         strides=[1, 1, 1, 1],
-        padding="VALID",
+        padding="SAME",
         use_cudnn_on_gpu=True,
         data_format='NHWC',
         dilations=[1, 1, 1, 1],
@@ -30,12 +44,12 @@ def ourConvolution(previous_layer, filter_height, filter_width, input_channels, 
     return layer1
 
 def ourPooling(conv_layer, kheight, kwidth):
-
+    ksize = [1, kheight, kwidth, 1]
     pool_layer = tf.nn.max_pool(
         value=conv_layer,
-        ksize=[1, kheight, kwidth, 1],
+        ksize=ksize,
         strides=[1, 1, 1, 1],
-        padding="VALID",
+        padding="SAME",
         data_format='NHWC',
         name=None
     )
@@ -76,52 +90,58 @@ x = tf.placeholder(tf.float32, shape=(None, 5, 7, 1), name="test2")
 
 
 
-init_op = tf.global_variables_initializer()
 
 
 #convolution layers
-for i in hyperparams["nr_convs"]:
+layers = []
+for i in np.arange(hyperparams["nr_convs"]):
     if i==0:
         input_channel = 1
         output_channel = 10
         previous_layer = x
     else:
-        previous_layer = layers[i-1]
-        input_channel = hyperparams.channel_sequence[i-1]
+        previous_layer = layers[(i*2)-1]
+        input_channel = hyperparams["channel_sequence"][i-1]
 
-    layers = []
-    conv_layer = ourConvolution(previous_layer,hyperparams["filter"][1], hyperparams["filter"][0], input_channel , hyperparams.channel_sequence[i])
+    conv_layer = ourConvolution(previous_layer,hyperparams["filter"][1], hyperparams["filter"][0], input_channel , hyperparams["channel_sequence"][i])
     layers.append(conv_layer)
     layers.append(ourPooling(conv_layer,hyperparams["ksize"][1], hyperparams["ksize"][0]))
 
-last_conv_layer = layers[hyperparams["nr_convs"]-1]
+last_conv_layer = layers[hyperparams["nr_convs"]*2-1]
+
+
+concat_layer = tf.reshape(last_conv_layer, [-1, last_conv_layer.shape[1].value*last_conv_layer.shape[2].value*last_conv_layer.shape[3].value] )
 
 
 
 #fully connected layers
 fc_layers = []
-for i in hyperparams["nr_fully_connected_layers"]:
+for i in range(hyperparams["nr_fully_connected_layers"]):
+    print i
+
     if i ==0:
-        previous_layer = last_conv_layer
+        previous_layer = concat_layer
     else:
         previous_layer = fc_layers[i-1]
-        fc_layers.append(fc_layer( previous_layer, hyperparams["nr_neurons_in_convlayer"]))
 
-last_fc_layer = fc_layers[hyperparams["nr_fully_connected_layers"]]
+
+
+    iteration_fc_layer = fc_layer( previous_layer, hyperparams["nr_neurons_in_convlayer"])
+    fc_layers.append(iteration_fc_layer)
+
+last_fc_layer = fc_layers[hyperparams["nr_fully_connected_layers"]-1]
 
 
 
 #dense layer
 dense_layer = fc_layer(last_fc_layer,1)
 
-
-
-
-# init_op = w.initializer
-
+init_op = tf.global_variables_initializer()
 
 with tf.Session() as sess:
     sess.run(init_op)
 
-    erg = sess.run([layer1], feed_dict={x: trainX, y: trainY})
+
+
+    erg = sess.run([dense_layer ], feed_dict={x: trainX, y: trainY})
     print erg
