@@ -2,3 +2,23 @@
 2.) Maxpool rauslassen?
 3.) Filtergrößen?
 
+
+
+TODO:
+- dropout: fully vs. convolution - A
+- l2 regulazier on layers - A
+
+
+
+kfold:
+- training
+- validierung
+- testen
+
+
+später:
+- alternativIdeen von Taziano
+
+
+>WEtterdienst:falsch
+>

@@ -48,7 +48,7 @@ def getDataSequence(batchsize,city1,city2,city3,city4,city5):
         if ok==4:
             print("Data ist OK")
             if batchsize*8>len(l1):
-                print("Die Batches sind zu groß")
+                print("Die Batches sind zu gross")
                 return None
             else:
                 batchamount=len(l1)//(batchsize*8)
@@ -213,6 +213,12 @@ last_fc_layer = fc_layers[hyperparams["nr_fully_connected_layers"]-1]
 dense_layer = fc_layer(last_fc_layer,1)
 
 init_op = tf.global_variables_initializer()
+
+
+
+cross_entropy = tf.reduce_mean(tf.nn.weighted_cross_entropy_with_logits(targets=self.y, logits=self.y_,
+                                                                        pos_weight=self.cross_entropy_class_weights))
+
 
 with tf.Session() as sess:
     sess.run(init_op)
