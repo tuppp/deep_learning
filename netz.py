@@ -98,14 +98,17 @@ for batch in batches:
 def fc_layer(input, neuronsize):
     shape=(input.shape[1].value, neuronsize)
     w = tf.Variable(tf.random_normal(shape=shape, stddev=0.03), name='w')
+    b = tf.Variable(tf.zeros(neuronsize), name="biases")
     layer = tf.matmul(input, w)
-    return layer
+    layer_biased = tf.add(layer,b)
+    return layer_biased
 
 
 #hyperparams["filter"][1], hyperparams["filter"][0]
 def ourConvolution(previous_layer, filter_height, filter_width, input_channels, output_channels):
     w = tf.Variable(tf.random_normal(shape=(filter_height, filter_width, input_channels, output_channels), mean=0,
                                      stddev=0.5))  # [filter_height, filter_width, in_channels, out_channels]
+    b = tf.Variable(tf.zeros(out_channels), name="biases")
 
     layer1 = tf.nn.conv2d(
         input=previous_layer,
@@ -118,7 +121,9 @@ def ourConvolution(previous_layer, filter_height, filter_width, input_channels, 
         name=None
     )
 
-    return layer1
+    layer1_biased = tf.add(layer1,b)
+
+    return layer1_biased
 
 def ourPooling(conv_layer, kheight, kwidth):
     ksize = [1, kheight, kwidth, 1]
