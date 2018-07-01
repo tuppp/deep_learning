@@ -33,7 +33,7 @@ def getDataSequence(batchsize,city1,city2,city3,city4,city5):
                 l4.append(row)
             if row[0]==city5:
                 l5.append(row)
-        print(len(l1),len(l2),len(l3),len(l4),len(l5),)
+        #print(len(l1),len(l2),len(l3),len(l4),len(l5),)
         ok=0
         if l1[0][3]==l2[0][3]:
             ok+=1
@@ -46,9 +46,9 @@ def getDataSequence(batchsize,city1,city2,city3,city4,city5):
 
         res=[]
         if ok==4:
-            print("Data ist OK")
+            #print("Data ist OK")
             if batchsize*8>len(l1):
-                print("Die Batches sind zu gross")
+                #print("Die Batches sind zu gross")
                 return None
             else:
                 batchamount=len(l1)//(batchsize*8)
@@ -69,10 +69,10 @@ def getDataSequence(batchsize,city1,city2,city3,city4,city5):
                         batchres[j]=l1[i*8*batchsize+j*8+7][15]
                     res.append([batch,batchres])
 
-            print(len(res))
+            #print(len(res))
             return res
         else:
-            print("Data ist fehlerhaft")
+            #print("Data ist fehlerhaft")
             return None
 
 
@@ -84,13 +84,14 @@ batches=getDataSequence(5   ,"1504","102","3319","4560","2638")
 for batch in batches:
     trainX=batch[0]
     trainY=batch[1]
-    print(trainX)
-    print(trainY)
+    #print(trainX)
+    #print(trainY)
 
 
 
 
 #readAllData
+
 
 
 
@@ -211,17 +212,19 @@ last_fc_layer = fc_layers[hyperparams["nr_fully_connected_layers"]-1]
 
 #dense layer
 dense_layer = fc_layer(last_fc_layer,1)
+loss = tf.losses.mean_squared_error(labels = y, predictions=dense_layer)
 
 init_op = tf.global_variables_initializer()
 
 
 
-cross_entropy = tf.reduce_mean(tf.nn.weighted_cross_entropy_with_logits(targets=self.y, logits=self.y_,
-                                                                        pos_weight=self.cross_entropy_class_weights))
 
-
+print "----"
 with tf.Session() as sess:
     sess.run(init_op)
 
-    erg = sess.run([dense_layer ], feed_dict={x: trainX, y: trainY})
-    print erg
+    loss_o = sess.run([loss], feed_dict={x: trainX, y : trainY})
+    print loss_o
+
+    erg_o = sess.run([dense_layer ], feed_dict={x: trainX, y: trainY})
+    print erg_o
