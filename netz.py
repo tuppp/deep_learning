@@ -255,12 +255,14 @@ with tf.Session() as sess:
     sess.run(init_op)
 
     for fold in range(0, 5):
+
         getData.val_id = i
         getData.fold_shuffle()
         testdata = getData.test
         testdata_labels = getData.test_labels
         valdata = getData.val
         valdata_labels = getData.val_labels
+
         for epoch in range(0, n):
             size = testdata.shape[2]
             indices = np.arange(size)
@@ -272,5 +274,5 @@ with tf.Session() as sess:
                     batch[:,:,i] = testdata[:,:,indices[i]]
                     batch_val[i] = valdata[indices[i]]
                 current_pointer = current_pointer + batch_size
-                loss_o, _ = sess.run([loss, optimiser], feed_dict={batch: trainX, batch_val: trainY})
-                loss_array.append(loss_o)
+                sess.run([optimiser], feed_dict={batch: trainX, batch_val: trainY})
+            loss_array.append(sess.run([loss], feed_dict={batch: trainX, batch_val: trainY}))
