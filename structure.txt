@@ -1,0 +1,25 @@
+daten = 1.) training/val (4/6)  2.) test (2/6)
+
+1.) 5 folds
+
+(n) epochs:
+    kfold (kmal)
+
+    >> 1fold: validierung
+    >> 4 fold: training
+    >> shuffle data inside fold
+
+
+    >trainineren auf 4 folds
+    >validieren 1 fold --> validation accuracy
+
+
+
+>> test daten
+
+
+
+
+
+>> von Marco: 5 random befüllte Buckets
+>> Date: test data

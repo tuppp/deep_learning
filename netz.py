@@ -224,12 +224,13 @@ init_op = tf.global_variables_initializer()
 
 
 
-print "----"
 with tf.Session() as sess:
+
+
     sess.run(init_op)
 
     loss_o = sess.run([loss], feed_dict={x: trainX, y : trainY})
-    print loss_o
+    print(loss_o)
 
     erg_o = sess.run([dense_layer ], feed_dict={x: trainX, y: trainY})
-    print erg_o
+    print(erg_o)
