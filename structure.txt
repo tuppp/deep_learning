@@ -1,5 +1,5 @@
-daten = 1.) training/val (4/6)  2.) test (2/6)
 
+daten = 1.) training/val (4/6)  2.) test (2/6)
 
 
 
@@ -7,26 +7,25 @@ for hyperparameter
     #get graph for hp
     #session:
 
+    kfolds (i):
+        epochs n:mal
+            train_data.shuffle
+            trainingsPhase over all batches
+            validierungsPhase over all batches
 
-    (n) epochs:
-        kfold (kmal)
 
-        >> 1 fold: validierung
+
+    trainingsPhase
+            >> 4 fold: training
+            trainX = np.ones((5,7,20000))
+            trainY = np.ones(( 1,1,20000)
+
+    validierung
         valX = np.ones((5,7,5000))
         valY = np.ones((5,7,5000))
-
-        >> 4 fold: training
-        trainX = np.ones((5,7,20000))
-        trainY = np.ones(( 1,1,20000)
+        berechne: output -> accuray(output_label, realdata_label)
 
 
-        >> shuffle data inside fold
-
-        > train_loss
-
-
-        >trainineren auf 4 folds
-        > validieren 1 fold --> validation accuracy
 
 
 
@@ -35,6 +34,3 @@ for hyperparameter
 
 
 
-
->> von Marco: 5 random befüllte Buckets
->> Date: test data
