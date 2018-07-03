@@ -218,18 +218,25 @@ last_fc_layer = fc_layers[hyperparams["nr_fully_connected_layers"]-1]
 #dense layer
 dense_layer = fc_layer(last_fc_layer,1)
 loss = tf.losses.mean_squared_error(labels = y, predictions=dense_layer)
+optimiser = tf.train.AdamOptimizer(learning_rate=hyperparams["learning_rate"]).minimize(loss)
+
 
 init_op = tf.global_variables_initializer()
 
+for i in range(epochs):
 
 
 
 with tf.Session() as sess:
 
 
+    #
+
+
     sess.run(init_op)
 
-    loss_o = sess.run([loss], feed_dict={x: trainX, y : trainY})
+    loss_o,_ = sess.run([loss, optimiser], feed_dict={x: trainX, y : trainY})
+
     print(loss_o)
 
     erg_o = sess.run([dense_layer ], feed_dict={x: trainX, y: trainY})

@@ -34,7 +34,8 @@ class Hyperparams():
             "filter" : [ np.random.choice(self.filter_range_city), np.random.choice(self.filter_range_time)],
             "nr_convs" : nr_convs,
             "channel_sequence" : channel_sequence,
-            "nr_fully_connected_layers" : 3
+            "nr_fully_connected_layers" : 3,
+            "learning_rate" : 0.001
         }
         return hyperparams
 
