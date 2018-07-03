@@ -1,3 +1,10 @@
+BRAUNLAGE
+POTSDAM
+BREMEN
+TRIER-PETRISBERG
+FICHTELBERG
+
+
 
 daten = 1.) training/val (4/6)  2.) test (2/6)
 

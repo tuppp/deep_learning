@@ -226,9 +226,34 @@ init_op = tf.global_variables_initializer()
 with tf.Session() as sess:
 
 
+
+
+    n = 1000
+    batch_size = hyperparams["batch_size"]
+    batches_per_fold = hyperparams["batches_per_fold"]
+    current_pointer = 0
+    loss_array = []
+    accuracy_array = []
+
     sess.run(init_op)
 
-    #training
-    loss_o,_ = sess.run([loss, optimiser], feed_dict={x: trainX, y : trainY, keep_prob : })
-
-
+    for fold in range(0, 5):
+        getData.val_id = i
+        getData.fold_shuffle()
+        testdata = getData.test
+        testdata_labels = getData.test_labels
+        valdata = getData.val
+        valdata_labels = getData.val_labels
+        for epoch in range(0, n):
+            size = testdata.shape[2]
+            indices = np.arange(size)
+            np.random.shuffle(indices)
+            batch = np.ones(5,7,size)
+            batch_val = np.ones(1,1,size)
+            for batches in range(0, batches_per_fold*4):
+                for i in range(current_pointer, batch_size):
+                    batch[:,:,i] = testdata[:,:,indices[i]]
+                    batch_val[i] = valdata[indices[i]]
+                current_pointer = current_pointer + batch_size
+                loss_o, _ = sess.run([loss, optimiser], feed_dict={batch: trainX, batch_val: trainY})
+                loss_array.append(loss_o)
