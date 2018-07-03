@@ -5,8 +5,15 @@ daten = 1.) training/val (4/6)  2.) test (2/6)
 (n) epochs:
     kfold (kmal)
 
-    >> 1fold: validierung
+    >> 1 fold: validierung
+    valX = np.ones((5,7,5000))
+    valY = np.ones((5,7,5000))
+
     >> 4 fold: training
+    trainX = np.ones((5,7,20000))
+    trainY = np.ones(( 1,1,20000)
+
+
     >> shuffle data inside fold
 
 
