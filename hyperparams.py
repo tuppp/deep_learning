@@ -35,7 +35,7 @@ class Hyperparams():
             "nr_convs" : nr_convs,
             "channel_sequence" : channel_sequence,
             "nr_fully_connected_layers" : 3,
-            "learning_rate" : 0.001
+            "learning_rate" : 0.001,
         }
         return hyperparams
 

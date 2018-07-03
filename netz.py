@@ -108,8 +108,7 @@ def fc_layer(input, neuronsize):
 def ourConvolution(previous_layer, filter_height, filter_width, input_channels, output_channels):
     w = tf.Variable(tf.random_normal(shape=(filter_height, filter_width, input_channels, output_channels), mean=0,
                                      stddev=0.5))  # [filter_height, filter_width, in_channels, out_channels]
-    b = tf.Variable(tf.zeros(out_channels), name="biases")
-
+    b = tf.Variable(tf.zeros(output_channels), name="biases")
     layer1 = tf.nn.conv2d(
         input=previous_layer,
         filter=w,
@@ -168,6 +167,7 @@ hyperparams = hp.getRandomHyperparameter()
 
 y = tf.placeholder(tf.float32, shape=(None), name="test")
 x = tf.placeholder(tf.float32, shape=(None, 5, 7, 1), name="test2")
+keep_prob = tf.placeholder(tf.float32)
 
 
 
@@ -223,21 +223,12 @@ optimiser = tf.train.AdamOptimizer(learning_rate=hyperparams["learning_rate"]).m
 
 init_op = tf.global_variables_initializer()
 
-for i in range(epochs):
-
-
-
 with tf.Session() as sess:
-
-
-    #
 
 
     sess.run(init_op)
 
-    loss_o,_ = sess.run([loss, optimiser], feed_dict={x: trainX, y : trainY})
+    #training
+    loss_o,_ = sess.run([loss, optimiser], feed_dict={x: trainX, y : trainY, keep_prob : })
 
-    print(loss_o)
 
-    erg_o = sess.run([dense_layer ], feed_dict={x: trainX, y: trainY})
-    print(erg_o)
