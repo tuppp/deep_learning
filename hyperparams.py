@@ -36,8 +36,7 @@ class Hyperparams():
             "channel_sequence" : channel_sequence,
             "nr_fully_connected_layers" : 3,
             "learning_rate" : 0.001,
-            "batch_size" : 500,
-            "batches_per_fold" : 10
+            "batch_size" : 500
             }
         return hyperparams
 

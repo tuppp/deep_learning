@@ -1,7 +1,7 @@
 #np.ones((5,7))
 #city(zeile), zeit(spalte)
 
-#batchsize,city,zeile
+#batchsize,city,zeileff
 
 
 
@@ -95,7 +95,12 @@ for batch in batches:
 
 
 
+
 def fc_layer(input, neuronsize):
+    if neuronsize==500:
+        neuronsize=1
+
+
     shape=(input.shape[1].value, neuronsize)
     w = tf.Variable(tf.random_normal(shape=shape, stddev=0.03), name='w')
     b = tf.Variable(tf.zeros(neuronsize), name="biases")
@@ -215,7 +220,7 @@ last_fc_layer = fc_layers[hyperparams["nr_fully_connected_layers"]-1]
 
 
 #dense layer
-dense_layer = fc_layer(last_fc_layer,1)
+dense_layer = fc_layer(last_fc_layer, 500)
 loss = tf.losses.mean_squared_error(labels = y, predictions=dense_layer)
 optimiser = tf.train.AdamOptimizer(learning_rate=hyperparams["learning_rate"]).minimize(loss)
 
@@ -225,12 +230,12 @@ init_op = tf.global_variables_initializer()
 
 class Getdata:
     def __init__(self):
-        pass
+
         self.val_id = 0
-        self.train = np.ones((20000,5,7,1))
-        self.train_labels = np.ones((20000))
-        self.val = np.ones((5000,5,7,1))
-        self.val_labels = np.ones((5000))
+        self.train = np.ones((550,5,7,1))
+        self.train_labels = np.ones((550))
+        self.val = np.ones((550,5,7,1))
+        self.val_labels = np.ones((550))
 
     def fold_shuffle(self):
         pass
@@ -243,7 +248,6 @@ with tf.Session() as sess:
 
     n = 1000
     batch_size = hyperparams["batch_size"]
-    batches_per_fold = hyperparams["batches_per_fold"]
     current_pointer = 0
     loss_training = []
     loss_val = []
@@ -285,10 +289,14 @@ with tf.Session() as sess:
                 current_pointer = current_pointer + batch_size
 
                 sess.run([optimiser], feed_dict={x: batch, y: batch_labels})
-                print("training...")
-
-            loss_training.append(sess.run([loss], feed_dict={x: traindata, y: traindata_labels}))
+            loss_training.append(sess.run([loss], feed_dict={x: batch, y: batch_labels}))
             print(loss_training[len(loss_training)-1])
 
-            loss_val.append(sess.run([loss], feed_dict={x: valdata, y: valdata_labels}))
+
+            _val_output, _val_loss = sess.run([dense_layer, loss], feed_dict={x: valdata[0:500,:,:,:], y: valdata_labels[0:500]})
+            loss_val.append(_val_loss)
+
+
+            for i,e in enumerate(_val_output):
+                print(_val_output[i]," = ",valdata_labels[i])
 
