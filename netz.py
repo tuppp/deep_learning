@@ -199,7 +199,6 @@ concat_layer = tf.reshape(last_conv_layer, [-1, last_conv_layer.shape[1].value*l
 #fully connected layers
 fc_layers = []
 for i in range(hyperparams["nr_fully_connected_layers"]):
-    print i
 
     if i ==0:
         previous_layer = concat_layer
@@ -223,41 +222,69 @@ optimiser = tf.train.AdamOptimizer(learning_rate=hyperparams["learning_rate"]).m
 
 init_op = tf.global_variables_initializer()
 
+
+class Getdata:
+    def __init__(self):
+        pass
+        self.val_id = 0
+        self.train = np.ones((20000,5,7,1))
+        self.train_labels = np.ones((20000))
+        self.val = np.ones((5000,5,7,1))
+        self.val_labels = np.ones((5000))
+
+    def fold_shuffle(self):
+        pass
+
+getData = Getdata()
+
+
+
 with tf.Session() as sess:
-
-
-
 
     n = 1000
     batch_size = hyperparams["batch_size"]
     batches_per_fold = hyperparams["batches_per_fold"]
     current_pointer = 0
-    loss_array = []
+    loss_training = []
+    loss_val = []
     accuracy_array = []
 
     sess.run(init_op)
 
+
+
     for fold in range(0, 5):
 
-        getData.val_id = i
+        getData.val_id = fold
         getData.fold_shuffle()
-        traindata = getData.test
-        traindata_labels = getData.test_labels
+        traindata = getData.train
+        traindata_labels = getData.train_labels
         valdata = getData.val
         valdata_labels = getData.val_labels
 
         for epoch in range(0, n):
-            size = traindata.shape[2]
+            size = traindata.shape[0]
+            print(size)
             indices = np.arange(size)
             np.random.shuffle(indices)
-            batch_labels = np.ones(1,1,size)
+            current_pointer = 0
+            batches = np.ones(batches_per_fold)
 
             for batches in range(0, batches_per_fold*4):
-                batch = np.ones(5,7,batch_size)
+                batch = np.ones((batch_size,5,7,1))
+                batch_labels = np.ones((batch_size))
                 for i in range(current_pointer, current_pointer+batch_size):
-                    batch[:,:,i-current_pointer] = traindata[:,:,indices[i]]
+
+                    batch[i-current_pointer, :, :, :] = traindata[indices[i], :, :, :]
                     batch_labels[i-current_pointer] = traindata_labels[indices[i]]
+
                 current_pointer = current_pointer + batch_size
-                sess.run([optimiser], feed_dict={batch: trainX, batch_labels: trainY})
-            loss_array.append(sess.run([loss], feed_dict={batch: trainX, batch_labels: trainY}))
+
+                sess.run([optimiser], feed_dict={x: batch, y: batch_labels})
+                print("training...")
+
+            loss_training.append(sess.run([loss], feed_dict={x: traindata, y: traindata_labels}))
+            print(loss_training[len(loss_training)-1])
+
+            loss_val.append(sess.run([loss], feed_dict={x: valdata, y: valdata_labels}))
 
