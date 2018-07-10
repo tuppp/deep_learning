@@ -241,21 +241,23 @@ with tf.Session() as sess:
 
         getData.val_id = i
         getData.fold_shuffle()
-        testdata = getData.test
-        testdata_labels = getData.test_labels
+        traindata = getData.test
+        traindata_labels = getData.test_labels
         valdata = getData.val
         valdata_labels = getData.val_labels
 
         for epoch in range(0, n):
-            size = testdata.shape[2]
+            size = traindata.shape[2]
             indices = np.arange(size)
             np.random.shuffle(indices)
-            batch = np.ones(5,7,size)
-            batch_val = np.ones(1,1,size)
+            batch_labels = np.ones(1,1,size)
+
             for batches in range(0, batches_per_fold*4):
-                for i in range(current_pointer, batch_size):
-                    batch[:,:,i] = testdata[:,:,indices[i]]
-                    batch_val[i] = valdata[indices[i]]
+                batch = np.ones(5,7,batch_size)
+                for i in range(current_pointer, current_pointer+batch_size):
+                    batch[:,:,i-current_pointer] = traindata[:,:,indices[i]]
+                    batch_labels[i-current_pointer] = traindata_labels[indices[i]]
                 current_pointer = current_pointer + batch_size
-                sess.run([optimiser], feed_dict={batch: trainX, batch_val: trainY})
-            loss_array.append(sess.run([loss], feed_dict={batch: trainX, batch_val: trainY}))
+                sess.run([optimiser], feed_dict={batch: trainX, batch_labels: trainY})
+            loss_array.append(sess.run([loss], feed_dict={batch: trainX, batch_labels: trainY}))
+
