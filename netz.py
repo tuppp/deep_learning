@@ -257,10 +257,14 @@ with tf.Session() as sess:
 
         getData.val_id = fold
         getData.fold_shuffle()
+
         traindata = getData.train
         traindata_labels = getData.train_labels
         valdata = getData.val
         valdata_labels = getData.val_labels
+
+        batches_per_train = int(np.floor(traindata.shape[0]/batch_size))
+        print(batches_per_train)
 
         for epoch in range(0, n):
             size = traindata.shape[0]
@@ -268,11 +272,11 @@ with tf.Session() as sess:
             indices = np.arange(size)
             np.random.shuffle(indices)
             current_pointer = 0
-            batches = np.ones(batches_per_fold)
+            batches = np.ones(batches_per_train)
 
-            for batches in range(0, batches_per_fold*4):
+            for batches in range(0, batches_per_train):
                 batch = np.ones((batch_size,5,7,1))
-                batch_labels = np.ones((batch_size))
+                batch_labels = np.ones(batch_size)
                 for i in range(current_pointer, current_pointer+batch_size):
 
                     batch[i-current_pointer, :, :, :] = traindata[indices[i], :, :, :]
