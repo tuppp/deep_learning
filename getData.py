@@ -170,13 +170,3 @@ class Getdata:
 
         #print(fold[0])
         #print(res[0])
-
-
-getdata=Getdata()
-getdata.start()
-getdata.val_id=3
-getdata.fold_shuffle()
-print(getdata.train.shape)
-print(getdata.train_labels.shape)
-print(getdata.val.shape)
-print(getdata.val_labels.shape)
